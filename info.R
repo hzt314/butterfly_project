@@ -1,3 +1,6 @@
+### Scripts for butterfly project
+### Coded by Han
+
 library(data.table)
 library(dplyr)
 library(ggplot2)
@@ -18,7 +21,7 @@ library(geomorph)
 library(lme4)
 library(lmerTest)
 
-library(plyr)
+library(plyr) # Don't active packages below until you make maps since it may cover some of functions of dplyr
 library(maptools)
 library(sp)
 library(mapproj)
@@ -35,7 +38,7 @@ for (i in 1:length(fn)) {
 }
 
 
-# make dataframe to plot
+## make dataframe to plot
 info_1<-rename(count(info,genus,year))
 info_1<-na.omit(info_1)
 ggplot(data=info_1,mapping = aes(x = year, y = n, colour = genus))+
@@ -45,7 +48,7 @@ ggplot(data=info_1,mapping = aes(x = year, y = n, colour = genus))+
   ylim(min(info_1$n)*1, max(info_1$n)*1)
 
 
-# filter by latitude 
+## filter by latitude 
 en<-subset(info,info$stateProvince == 'England') # focus on England specimens
 
 ## keep all species got same weight when calculating
@@ -61,7 +64,7 @@ for (i in names) {
 ## In this case we want to keep at least 1,000 individuals per species, so we take 70 percentile
 lat<-quantile(en_1$decimalLatitude,0.70, na.rm = TRUE)
 en_2<-subset(en,en$decimalLatitude<lat,na.rm = TRUE) # subset the new data set meet the condition
-# merge file names data to imges info data
+## merge file names data to imges info data
 fn_2<-list.files("/Users/han/data/ICL/butterfly_project/data/info/Nymphalidae", full.names = TRUE, recursive = TRUE, pattern = "multimedia.csv")
 info_2<-data.frame()
 rm(v)
@@ -72,7 +75,7 @@ for (i in 1:length(fn_2)) {
 info_2<-info_2[!duplicated(info_2[,1],fromLast = TRUE),]
 en_3<-inner_join(en_2,info_2,by='X_id', all=FALSE)
 
-# managing the image folders
+## managing the image folders
 wd_1<-'/Users/han/data/ICL/butterfly_project/data/images'
 setwd(wd_1) ## set work directions 
 fdn_1<-list.files(wd_1)
@@ -83,7 +86,7 @@ lapply(1:length(fdn_1),function(i)
 fdn_2<-list.files()
 
 
-# move selected images into separeted subfolders, each subfolder includes 100 specimens
+## move selected images into separeted subfolders, each subfolder includes 100 specimens
 ## create a folder named 0 to put all selected images by species temporarily
 for (i in 1:length(fdn_2)) {
   setwd(paste(wd_1,'butterfly_selected_images_NHM_mastersproject_summer2020',fdn_2[i],sep = '/'))
@@ -159,7 +162,7 @@ tn_1_b<-list.files("/Users/han/data/ICL/butterfly_project/data/images/butterfly_
 tn_1_l<-list.files("/Users/han/data/ICL/butterfly_project/data/images/butterfly_selected_images_NHM_mastersproject_summer2020/Pararge_aegeria_selected_NHM_2020", full.names = TRUE, recursive = TRUE, pattern = "LFW")
 tn_1_r<-list.files("/Users/han/data/ICL/butterfly_project/data/images/butterfly_selected_images_NHM_mastersproject_summer2020/Pararge_aegeria_selected_NHM_2020", full.names = TRUE, recursive = TRUE, pattern = "RFW")
 
-#t_1<-data.frame()
+# t_1<-data.frame()
 body_1 <-list()
 lfw_1<-list()
 rfw_1<-list()
@@ -273,7 +276,7 @@ plot(res_rwy)
 abline(h=0)
 plot(reg_rwy)
 
-### difference between left and right wingspan
+## difference between left and right wingspan
 difws<-lwsp-rwsp
 reg_difwsy<-lm(difws~year)
 plot(difws~year)
@@ -285,7 +288,7 @@ plot(reg_difwsy)
 ggplot(wy, aes(year, wsp) ) +
   geom_point() +
   stat_smooth()
-### here ggplot selected 'gam' regression for default
+# here ggplot selected 'gam' regression for default
 
 
 ## try time series analysis
